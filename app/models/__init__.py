@@ -2,6 +2,13 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Text, DateTime, Tabl
 from sqlalchemy.orm import relationship
 from ..database import Base
 from datetime import datetime
+from .user import User
+from .channel import Channel
+from .chat import Chat
+from .message import Message
+from .chat_participants import chat_participants
+from .channel_members import channel_members
+
 
 # Ассоциация для участников чата
 chat_participants = Table(
@@ -17,7 +24,6 @@ channel_members = Table(
     Column('channel_id', Integer, ForeignKey('channels.id'))
 )
 
-
 class User(Base):
     __tablename__ = 'users'
 
@@ -30,14 +36,12 @@ class User(Base):
     chats = relationship('Chat', secondary=chat_participants, back_populates='participants')
     channels = relationship('Channel', secondary=channel_members, back_populates='members')
 
-
 class Chat(Base):
     __tablename__ = 'chats'
 
     id = Column(Integer, primary_key=True, index=True)
     participants = relationship('User', secondary=chat_participants, back_populates='chats')
     messages = relationship('Message', back_populates='chat')
-
 
 class Message(Base):
     __tablename__ = 'messages'
@@ -62,6 +66,11 @@ class Channel(Base):
     admin = relationship('User', back_populates='channels')
     members = relationship('User', secondary=channel_members, back_populates='channels')
     messages = relationship('ChannelMessage', back_populates='channel')
+    channel_members = Table(
+    'channel_members', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('channel_id', Integer, ForeignKey('channels.id'))
+)
 
 
 class ChannelMessage(Base):
@@ -74,4 +83,3 @@ class ChannelMessage(Base):
 
     channel = relationship('Channel', back_populates='messages')
     sender = relationship('User', back_populates='channel_messages')
-
