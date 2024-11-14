@@ -8,3 +8,5 @@ router = APIRouter()
 router.include_router(chat_router, prefix="/chat", tags=["chat"])
 router.include_router(user_router, prefix="/user", tags=["user"])
 router.include_router(channel_router, prefix="/channel", tags=["channel"])
+
+

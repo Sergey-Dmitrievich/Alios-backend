@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from .database import engine, Base
 from .routers import router
 from .routers import router
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 
 
@@ -14,4 +17,12 @@ app.include_router(router, prefix="/api")
 Base.metadata.create_all(bind=engine)
 
 # Подключение маршрутизаторов
-app.include_router(router)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Укажите ваши источники, если нужно
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

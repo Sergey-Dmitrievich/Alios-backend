@@ -12,6 +12,8 @@ from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 
 
+
+
 # Список активных подключений
 active_connections: List[WebSocket] = []
 
@@ -44,7 +46,7 @@ def get_db():
 
 # Модель для регистрации пользователя
 class UserCreate(BaseModel):
-    phone_number: str
+    phone_number: int
     name: str
     password: str
 
@@ -69,7 +71,6 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-# Остальной код остается без изменений...
 
 # Создание чата
 class ChatCreate(BaseModel):
@@ -208,3 +209,4 @@ def unsubscribe_from_channel(channel_id: int, user_id: int, db: Session = Depend
 @router.get("/channels/{channel_id}/messages", response_model=List[Message])
 def get_channel_messages(channel_id: int, db: Session = Depends(get_db)):
     return db.query(Message).filter(Message.channel_id == channel_id).all()
+
